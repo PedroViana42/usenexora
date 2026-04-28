@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
-import { Terminal, Target, Database, Zap, Lock, Star, Globe, Smartphone, BarChart3, Fingerprint } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Terminal, Target, Database, Zap, Lock, Star, Globe, Smartphone, BarChart3, Fingerprint, ShieldCheck, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Starfield } from './components/Starfield';
@@ -42,6 +42,9 @@ export default function App() {
     const whatsappUrl = `https://wa.me/5562993552673?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
+
+  const [showStatus, setShowStatus] = useState(false);
+  const [activeModal, setActiveModal] = useState<null | 'terms' | 'privacy'>(null);
 
   return (
     <div className="min-h-screen bg-base-dark text-text-main font-sans selection:bg-accent-green selection:text-base-dark relative overflow-x-hidden">
@@ -297,14 +300,115 @@ export default function App() {
             USENEXORA &copy; {new Date().getFullYear()} &bull; PRESENÇA DIGITAL
           </div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Termos</a>
-            <a href="#" className="hover:text-white transition-colors">Privacidade</a>
-            <a href="#" className="hover:text-accent-green flex items-center gap-2">
+            <button onClick={() => setActiveModal('terms')} className="hover:text-white transition-colors">Termos</button>
+            <button onClick={() => setActiveModal('privacy')} className="hover:text-white transition-colors">Privacidade</button>
+            <button 
+              onClick={() => setShowStatus(!showStatus)} 
+              className={`flex items-center gap-2 transition-colors ${showStatus ? 'text-accent-green' : 'hover:text-accent-green'}`}
+            >
               <Lock className="w-3 h-3" /> INFRA SEGURA
-            </a>
+            </button>
           </div>
         </div>
       </footer>
+
+      {/* Security Status Card (Floating) */}
+      <AnimatePresence>
+        {showStatus && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-24 right-6 z-50 w-72 bg-base-panel/90 backdrop-blur-xl border border-accent-green/30 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-sm"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-accent-green font-mono text-[10px] uppercase tracking-widest">
+                <ShieldCheck className="w-4 h-4" /> System Status
+              </div>
+              <button onClick={() => setShowStatus(false)} className="text-text-muted hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-text-muted text-xs font-mono">SERVER UPTIME</span>
+                <span className="text-white text-xs font-mono">99.98%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-text-muted text-xs font-mono">SSL ENCRYPTION</span>
+                <span className="text-accent-green text-xs font-mono">ACTIVE (AES-256)</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-text-muted text-xs font-mono">CDN EDGE</span>
+                <span className="text-white text-xs font-mono">GLOBAL (VERCEL)</span>
+              </div>
+              <div className="pt-2 border-t border-base-border/30">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
+                  <span className="text-[10px] text-accent-green font-mono uppercase tracking-tighter">Todos os sistemas operacionais</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Compliance Modal (Terms / Privacy) */}
+      <AnimatePresence>
+        {activeModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveModal(null)}
+              className="absolute inset-0 bg-base-dark/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-base-panel border border-base-border p-10 shadow-2xl rounded-sm"
+            >
+              <button 
+                onClick={() => setActiveModal(null)}
+                className="absolute top-6 right-6 text-text-muted hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h2 className="font-display text-3xl font-bold text-white uppercase tracking-tight mb-6">
+                {activeModal === 'terms' ? 'Termos de Serviço' : 'Política de Privacidade'}
+              </h2>
+              
+              <div className="prose prose-invert max-h-[60vh] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-base-border">
+                <p className="text-text-muted leading-relaxed mb-4">
+                  A <strong>UseNexora</strong> preza pela transparência e segurança total dos dados de seus clientes e parceiros. 
+                </p>
+                <p className="text-text-muted leading-relaxed mb-4">
+                  Como uma consultoria de presença digital premium, todos os nossos contratos são regidos pelas leis brasileiras de proteção de dados (LGPD) e garantem a propriedade intelectual total dos ativos desenvolvidos para nossos contratantes.
+                </p>
+                <h4 className="text-white font-bold mt-6 mb-2">Segurança de Dados</h4>
+                <p className="text-text-muted leading-relaxed mb-4">
+                  Não compartilhamos métricas ou estratégias de nossos clientes com terceiros. Sua vantagem competitiva é protegida por cláusulas rigorosas de confidencialidade.
+                </p>
+                <p className="text-text-muted leading-relaxed">
+                  Para mais detalhes sobre contratos específicos, entre em contato através do nosso canal oficial no WhatsApp.
+                </p>
+              </div>
+              
+              <div className="mt-10 pt-6 border-t border-base-border/30 flex justify-end">
+                <button 
+                  onClick={() => setActiveModal(null)}
+                  className="px-8 py-3 bg-white text-base-dark font-bold uppercase tracking-widest text-xs hover:bg-accent-green transition-colors"
+                >
+                  Entendido
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
