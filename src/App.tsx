@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Starfield } from './components/Starfield';
 import { MagneticButton } from './components/MagneticButton';
+import ContactForm from './components/ContactForm';
 
 const Orbiter = ({ delay, radius, duration }: { delay: number, radius: number, duration: number }) => (
   <motion.div
@@ -71,39 +72,57 @@ export default function App() {
             onClick={handleWhatsApp}
             className="text-[10px] sm:text-xs px-4 sm:px-6 py-4"
           >
-            Solicitar Orçamento
+            Ver como funciona
           </MagneticButton>
         </div>
       </nav>
 
-      {/* 1. Hero Section - Centered, Grandiose */}
-      <section className="relative pt-40 pb-32 min-h-screen flex flex-col items-center justify-center overflow-hidden z-10">
+      <main>
+        {/* 1. Hero Section - Centered, Grandiose */}
+        <section className="relative pt-40 pb-32 min-h-screen flex flex-col items-center justify-center overflow-hidden z-10">
         <div className="max-w-5xl mx-auto px-6 relative z-30 flex flex-col items-center text-center">
           
           <Badge variant="outline" className="mb-8 rounded-none border-accent-green/50 text-accent-green font-mono uppercase tracking-widest px-4 py-1.5 glow-green bg-accent-green/5">
             <Globe className="w-3 h-3 mr-2 inline" /> AGÊNCIA DE ALTA PERFORMANCE
           </Badge>
           
-          <h1 className="font-display text-5xl md:text-7xl leading-[1.05] font-bold text-white mb-6 tracking-tight uppercase max-w-4xl">
-            CONSTRUÍMOS SUA <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-green to-white">
-              PRESENÇA DOMINANTE
-            </span> <br/>
-            NA INTERNET.
+          <h1 className="font-display text-3xl md:text-5xl leading-[1.15] font-bold text-white mb-8 tracking-tight uppercase max-w-4xl">
+            As pessoas chegam ao seu site e <br/>
+            <span className="text-[#00C46A]">saem sem falar com você?</span> <br/>
+            <div className="mt-6 flex flex-col gap-2 items-center">
+              <span className="bg-[#00C46A] text-base-dark px-4 py-1.5 inline-block text-2xl md:text-4xl">
+                Resolvemos os gargalos de conversão
+              </span>
+              <span className="bg-[#00C46A] text-base-dark px-4 py-1.5 inline-block text-2xl md:text-4xl">
+                para aumentar sua taxa de marcação.
+              </span>
+            </div>
           </h1>
           
           <p className="text-text-muted text-lg md:text-xl font-sans max-w-2xl leading-relaxed mb-12">
-            Esqueça templates genéricos. Construímos ecossistemas digitais imersivos e infraestruturas de alta performance que posicionam sua marca como líder absoluta no seu nicho.
+            Páginas personalizadas que passam autoridade e automações que agilizam o atendimento. Transformamos sua presença digital em um canal de vendas que não para de crescer.
           </p>
           
           <div className="flex gap-4 mb-20">
             <MagneticButton 
               onClick={handleWhatsApp}
+              variant="solid"
               className="text-sm md:text-base px-8 md:px-12 py-5 md:py-6"
             >
-              Solicitar Orçamento
+              Quero minha LP que vende
             </MagneticButton>
+            <div className="mt-4 flex items-center justify-center gap-2 text-text-muted text-xs font-mono uppercase tracking-widest">
+              <ShieldCheck className="w-3 h-3 text-accent-green" />
+              Projeto entregue em até 7 dias com garantia de revisão
+            </div>
           </div>
+        </div>
+
+        {/* Background Elements - Subtle and high-end */}
+        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent-green/5 blur-[120px] rounded-full"></div>
+          {/* Technical Grid Pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#14C8711a_1px,transparent_1px),linear-gradient(to_bottom,#14C8711a_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
         </div>
 
         {/* Floating Mockup / Base Map beneath the text */}
@@ -123,55 +142,72 @@ export default function App() {
             className="relative z-10 w-full aspect-video rounded-t-3xl overflow-hidden border-t border-x border-accent-green/30 shadow-[0_-20px_50px_rgba(20,200,113,0.15)]"
           >
             <div className="absolute inset-0 bg-base-dark mix-blend-color z-10"></div>
-            <img src="/images/base_map.png" alt="Nexora Infrastructure" className="w-full h-full object-cover object-center relative z-0" />
+            <img src="/images/dashboard_mockup.webp" alt="Nexora Metrics Dashboard" width="1200" height="675" loading="lazy" className="w-full h-full object-cover object-center relative z-0" />
             <div className="absolute inset-0 bg-gradient-to-t from-base-dark via-base-dark/50 to-transparent z-20"></div>
           </motion.div>
         </div>
       </section>
 
-      {/* 2. Social Proof - Asymmetrical Layout */}
-      <section className="py-24 relative z-20 bg-base-dark/30 backdrop-blur-sm">
+      {/* 2. Prova Social (Depoimentos) */}
+      <section className="py-32 relative z-20 bg-base-dark/50 backdrop-blur-sm" id="depoimentos">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
-            
-            {/* Testimonial Feature (Larger, more prominent) */}
-            <Card className="w-full lg:w-3/5 bg-base-panel/80 backdrop-blur-md border border-base-border/50 p-10 relative overflow-hidden group hover:border-accent-green/40 transition-colors">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-accent-green/5 blur-[100px] rounded-full pointer-events-none"></div>
-              <div className="flex gap-1 text-accent-green mb-6">
-                {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-current" />)}
-              </div>
-              <p className="text-white font-display text-2xl md:text-3xl font-medium italic mb-8 leading-snug">
-                "O nível de autoridade e a solidez da nossa nova presença digital transformaram a forma como o mercado nos enxerga. Não é apenas um site, é uma máquina de vendas."
-              </p>
-              <div className="flex items-center gap-6">
-                <div className="w-16 h-16 rounded-none overflow-hidden border border-base-border">
-                  <img src="/images/doctor.png" alt="CEO" className="w-full h-full object-cover grayscale" />
+          <div className="mb-20 text-center">
+            <h2 className="font-display text-4xl font-bold text-white uppercase tracking-tight mb-4">
+              Resultados Reais de Quem Escolheu a Nexora
+            </h2>
+            <p className="font-mono text-text-muted uppercase tracking-widest text-sm">
+              Não é apenas um site novo, é o fim do desperdício de leads.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Testimonial 1 */}
+            <div className="bg-white/5 backdrop-blur-md border border-base-border/50 p-8 rounded-sm hover:border-[#00C46A]/40 transition-all duration-300 group">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-[#00C46A]/30">
+                  <img src="/images/testimonials/doctor_ricardo.webp" alt="Dr. Ricardo" width="48" height="48" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
                 </div>
                 <div>
-                  <div className="text-white font-bold text-lg">Roberto Mendes</div>
-                  <div className="font-mono text-xs text-text-muted uppercase tracking-widest">Diretor Executivo</div>
+                  <div className="text-white font-bold text-sm">Dr. Ricardo</div>
+                  <div className="text-text-muted text-[10px] uppercase font-mono tracking-wider">Clínica Bueno</div>
                 </div>
               </div>
-            </Card>
-
-            {/* Logos (Smaller column) */}
-            <div className="w-full lg:w-2/5 flex flex-col gap-10 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-              <h3 className="font-mono text-sm text-text-muted uppercase tracking-widest border-l-2 border-accent-green pl-4">
-                Padrão de Excelência Por
-              </h3>
-              <div className="flex flex-col gap-8">
-                <div className="flex items-center gap-4 text-2xl font-display font-bold text-white">
-                  <Fingerprint className="w-8 h-8 text-accent-green" /> TechCorp
-                </div>
-                <div className="flex items-center gap-4 text-2xl font-display font-bold text-white">
-                  <Smartphone className="w-8 h-8 text-blue-400" /> StartApp
-                </div>
-                <div className="flex items-center gap-4 text-2xl font-display font-bold text-white">
-                  <Target className="w-8 h-8 text-purple-400" /> GlobalPartner
-                </div>
-              </div>
+              <p className="text-white/80 text-base leading-relaxed italic">
+                "A nova página da Nexora reduziu nosso custo por lead em <span className="text-[#00C46A] font-bold">40%</span> em menos de um mês. O retorno foi imediato."
+              </p>
             </div>
 
+            {/* Testimonial 2 */}
+            <div className="bg-white/5 backdrop-blur-md border border-base-border/50 p-8 rounded-sm hover:border-[#00C46A]/40 transition-all duration-300 group">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-[#00C46A]/30">
+                  <img src="/images/testimonials/mariana_l.webp" alt="Mariana L." width="48" height="48" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                </div>
+                <div>
+                  <div className="text-white font-bold text-sm">Mariana L.</div>
+                  <div className="text-text-muted text-[10px] uppercase font-mono tracking-wider">Gestora de Estética</div>
+                </div>
+              </div>
+              <p className="text-white/80 text-base leading-relaxed italic">
+                "O site antigo era lento e não convertia. Após a auditoria e nova LP, <span className="text-[#00C46A] font-bold">dobramos</span> nossos agendamentos via WhatsApp."
+              </p>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="bg-white/5 backdrop-blur-md border border-base-border/50 p-8 rounded-sm hover:border-[#00C46A]/40 transition-all duration-300 group">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-[#00C46A]/30">
+                  <img src="/images/testimonials/carlos_eduardo.webp" alt="Carlos Eduardo" width="48" height="48" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                </div>
+                <div>
+                  <div className="text-white font-bold text-sm">Carlos Eduardo</div>
+                  <div className="text-text-muted text-[10px] uppercase font-mono tracking-wider">CEO NexoHub</div>
+                </div>
+              </div>
+              <p className="text-white/80 text-base leading-relaxed italic">
+                "Entrega recorde em <span className="text-[#00C46A] font-bold">7 dias</span> e uma performance que o Google finalmente reconhece com nota máxima."
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -245,7 +281,56 @@ export default function App() {
         </div>
       </section>
 
-      {/* 4. Autoridade/Filosofia (Quem Somos) - Asymmetrical Layout */}
+      {/* 4. Como Funciona (Processo) */}
+      <section className="py-32 relative z-20 border-y border-base-border/20 bg-base-panel/20" id="processo">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-20 text-center">
+            <h2 className="font-display text-4xl font-bold text-white uppercase tracking-tight mb-4">
+              O Processo UseNexora
+            </h2>
+            <p className="font-mono text-text-muted uppercase tracking-widest text-sm">
+              Do briefing ao faturamento em tempo recorde.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* Step 01 */}
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-16 h-16 bg-[#00C46A]/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-[#00C46A]/20 transition-colors duration-300">
+                <span className="font-display text-2xl font-bold text-[#00C46A]">01</span>
+              </div>
+              <h3 className="font-display text-xl font-bold text-white uppercase mb-3">Briefing Estratégico</h3>
+              <p className="text-text-muted text-sm leading-relaxed max-w-xs">
+                Entendemos o seu público e mapeamos seus diferenciais em uma conversa rápida e sem enrolação.
+              </p>
+            </div>
+
+            {/* Step 02 */}
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-16 h-16 bg-[#00C46A]/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-[#00C46A]/20 transition-colors duration-300">
+                <span className="font-display text-2xl font-bold text-[#00C46A]">02</span>
+              </div>
+              <h3 className="font-display text-xl font-bold text-white uppercase mb-3">Desenvolvimento Ágil</h3>
+              <p className="text-text-muted text-sm leading-relaxed max-w-xs">
+                Criamos sua página focada em performance e conversão, do design exclusivo ao código limpo.
+              </p>
+            </div>
+
+            {/* Step 03 */}
+            <div className="flex flex-col items-center text-center group">
+              <div className="w-16 h-16 bg-[#00C46A]/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-[#00C46A]/20 transition-colors duration-300">
+                <span className="font-display text-2xl font-bold text-[#00C46A]">03</span>
+              </div>
+              <h3 className="font-display text-xl font-bold text-white uppercase mb-3">Entrega e Revisão</h3>
+              <p className="text-text-muted text-sm leading-relaxed max-w-xs">
+                Seu site no ar em até 7 dias com garantia de revisão e suporte total para os ajustes finais.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Autoridade/Filosofia (Quem Somos) - Asymmetrical Layout */}
       <section className="py-32 relative z-20" id="sobre">
         <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row gap-20 items-center">
           <div className="lg:w-1/2 relative">
@@ -271,26 +356,49 @@ export default function App() {
         </div>
       </section>
 
-      {/* 5. CTA Final */}
-      <section className="py-40 relative z-20" id="contact">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="w-16 h-16 bg-white mx-auto flex items-center justify-center mb-8 rounded-full shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-            <Zap className="text-base-dark w-8 h-8" />
+      {/* 6. Garantia */}
+      <section className="py-20 relative z-20">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="bg-base-panel/40 backdrop-blur-md border border-[#00C46A]/30 p-12 text-center relative overflow-hidden rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00C46A]/5 blur-3xl pointer-events-none"></div>
+            <div className="w-16 h-16 bg-[#00C46A]/10 mx-auto flex items-center justify-center mb-8 rounded-full">
+              <ShieldCheck className="text-[#00C46A] w-8 h-8" />
+            </div>
+            <h2 className="font-display text-3xl font-bold text-white uppercase tracking-tight mb-4">
+              Nossa Garantia de Excelência
+            </h2>
+              <p className="text-white text-xl font-sans mb-6 leading-relaxed">
+              Se você não ficar 100% satisfeito com a entrega da sua Landing Page, <span className="text-[#00C46A] font-bold">nós a refazemos sem qualquer custo adicional.</span>
+            </p>
+            <p className="text-text-muted font-mono uppercase tracking-widest text-xs">
+              Nosso compromisso é com o seu resultado e a autoridade da sua marca.
+            </p>
           </div>
-          <h2 className="font-display text-5xl md:text-7xl font-bold text-white uppercase tracking-tight mb-6">
-            Vamos construir o seu futuro digital?
-          </h2>
-          <p className="text-text-muted font-mono uppercase tracking-widest text-sm mb-16">
-            Nossa agenda aceita um número limitado de novos projetos por mês para garantir extrema qualidade.
-          </p>
-          <MagneticButton 
-            onClick={handleWhatsApp}
-            className="mx-auto text-base sm:text-lg px-8 sm:px-12 py-6 sm:py-8"
-          >
-            Solicitar Orçamento
-          </MagneticButton>
         </div>
       </section>
+
+      {/* 7. CTA Final + Form */}
+      <section className="py-24 relative z-20" id="contact">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <div className="w-16 h-16 bg-[#00C46A]/10 mx-auto flex items-center justify-center mb-8 rounded-full shadow-[0_0_30px_rgba(0,196,106,0.1)]">
+            <Zap className="text-[#00C46A] w-8 h-8" />
+          </div>
+          <h2 className="font-display text-5xl md:text-6xl font-bold text-white uppercase tracking-tight mb-6">
+            Inicie sua transformação digital
+          </h2>
+          <p className="text-text-muted font-mono uppercase tracking-widest text-sm mb-16 max-w-2xl mx-auto">
+            Nossa agenda aceita um número limitado de novos projetos por mês para garantir extrema qualidade.
+          </p>
+          
+          <ContactForm />
+
+          <div className="mt-8 flex items-center justify-center gap-2 text-text-muted text-[10px] font-mono uppercase tracking-[0.2em]">
+            <ShieldCheck className="w-3 h-3 text-[#00C46A]" />
+            Seus dados estão seguros e protegidos
+          </div>
+        </div>
+      </section>
+      </main>
 
       {/* Minimalist Footer */}
       <footer className="py-12 bg-base-panel/50 backdrop-blur-md border-t border-base-border/30 text-center relative z-20">
@@ -377,9 +485,9 @@ export default function App() {
                 <X className="w-6 h-6" />
               </button>
               
-              <h2 className="font-display text-3xl font-bold text-white uppercase tracking-tight mb-6">
+              <h3 className="font-display text-3xl font-bold text-white uppercase tracking-tight mb-6">
                 {activeModal === 'terms' ? 'Termos de Serviço' : 'Política de Privacidade'}
-              </h2>
+              </h3>
               
               <div className="prose prose-invert max-h-[60vh] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-base-border">
                 <p className="text-text-muted leading-relaxed mb-4">

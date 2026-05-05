@@ -6,9 +6,10 @@ interface MagneticButtonProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  variant?: 'outline' | 'solid';
 }
 
-const Particle = ({ angle, distance }: { angle: number; distance: number }) => {
+const Particle = ({ angle, distance, color = '#14C871' }: { angle: number; distance: number; color?: string }) => {
   return (
     <motion.div
       initial={{ scale: 0, x: 0, y: 0, opacity: 1 }}
@@ -19,12 +20,13 @@ const Particle = ({ angle, distance }: { angle: number; distance: number }) => {
         opacity: [1, 1, 0] 
       }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="absolute w-1 h-1 bg-accent-green rounded-full shadow-[0_0_8px_rgba(20,200,113,0.8)]"
+      className="absolute w-1 h-1 rounded-full shadow-[0_0_8px_rgba(20,200,113,0.8)]"
+      style={{ backgroundColor: color }}
     />
   );
 };
 
-export const MagneticButton: React.FC<MagneticButtonProps> = ({ children, className, onClick }) => {
+export const MagneticButton: React.FC<MagneticButtonProps> = ({ children, className, onClick, variant = 'outline' }) => {
   const ref = useRef<HTMLButtonElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -67,6 +69,12 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({ children, classN
     if (onClick) onClick();
   };
 
+  const baseStyles = "relative overflow-hidden font-sans font-bold uppercase tracking-widest transition-all duration-300 group flex items-center justify-center";
+  const variants = {
+    outline: "rounded-sm bg-base-dark/50 backdrop-blur-md border border-accent-green text-white shadow-[0_0_15px_rgba(20,200,113,0.3)] hover:text-base-dark",
+    solid: "rounded-md bg-[#00C46A] text-base-dark shadow-[0_10px_30px_rgba(0,196,106,0.3)] hover:brightness-110 hover:scale-[1.02]"
+  };
+
   return (
     <motion.button
       ref={ref}
@@ -77,12 +85,14 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({ children, classN
       animate={{ x: position.x, y: position.y }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
-      className={`relative overflow-hidden rounded-sm bg-base-dark/50 backdrop-blur-md border border-accent-green text-white font-sans font-bold uppercase tracking-widest transition-colors duration-300 shadow-[0_0_15px_rgba(20,200,113,0.3)] hover:text-base-dark group flex items-center justify-center ${className}`}
+      className={`${baseStyles} ${variants[variant]} ${className}`}
     >
-      {/* Background fill on hover */}
-      <div 
-        className="absolute inset-0 bg-accent-green opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"
-      ></div>
+      {/* Background fill on hover (only for outline) */}
+      {variant === 'outline' && (
+        <div 
+          className="absolute inset-0 bg-accent-green opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"
+        ></div>
+      )}
 
       {/* Star Burst Particles */}
       <AnimatePresence>
