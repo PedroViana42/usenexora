@@ -1,523 +1,481 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Terminal, Target, Database, Zap, Lock, Star, Globe, Smartphone, BarChart3, Fingerprint, ShieldCheck, X } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Starfield } from './components/Starfield';
+import { useState } from 'react';
+import {
+  Activity,
+  ArrowUpRight,
+  Bot,
+  CheckCircle2,
+  Database,
+  FileSpreadsheet,
+  LayoutDashboard,
+  Lock,
+  MessageCircle,
+  PanelLeft,
+  PlugZap,
+  Rows3,
+  ShieldCheck,
+  SquareTerminal,
+  TableProperties,
+  Workflow,
+  X,
+} from 'lucide-react';
 import { MagneticButton } from './components/MagneticButton';
 import ContactForm from './components/ContactForm';
 
-const Orbiter = ({ delay, radius, duration }: { delay: number, radius: number, duration: number }) => (
-  <motion.div
-    className="absolute top-1/2 left-1/2 rounded-full border border-base-border/40 border-dashed pointer-events-none"
-    style={{
-      width: radius * 2,
-      height: radius * 2,
-      x: '-50%',
-      y: '-50%',
-    }}
-  >
-    <motion.div
-      animate={{ rotate: 360 }}
-      transition={{ duration, repeat: Infinity, ease: 'linear', delay }}
-      className="w-full h-full absolute top-0 left-0"
-    >
-      <div className="w-1.5 h-1.5 bg-accent-green rounded-full shadow-[0_0_10px_rgba(20,200,113,0.8)] -top-[3px] left-1/2 transform -translate-x-1/2 absolute" />
-    </motion.div>
-  </motion.div>
+const navItems = [
+  ['Início', '#inicio'],
+  ['Sistemas', '#sistemas'],
+  ['Automações', '#automacoes'],
+  ['Processo', '#processo'],
+  ['Contato', '#contato'],
+];
+
+const recentRecords = [
+  ['Pedido #1842', 'Aguardando NF', 'pendente'],
+  ['Cliente Martins', 'Cadastro validado', 'processado'],
+  ['Lead WhatsApp', 'Enviado ao CRM', 'concluído'],
+  ['Relatório semanal', 'Gerado às 08:00', 'concluído'],
+];
+
+const solutionBlocks = [
+  {
+    title: 'Sistemas internos para rotina operacional',
+    description: 'Telas, permissões, histórico e regras de negócio desenhadas para o jeito que sua equipe realmente trabalha.',
+    icon: Workflow,
+    className: 'lg:col-span-2',
+    detail: 'fila / status / histórico',
+  },
+  {
+    title: 'Painéis administrativos',
+    description: 'Controle de cadastros, demandas, usuários, etapas e indicadores sem depender de abas espalhadas.',
+    icon: LayoutDashboard,
+    className: '',
+    detail: 'admin console',
+  },
+  {
+    title: 'Automações integradas',
+    description: 'Rotinas que conectam WhatsApp, planilhas, APIs e ferramentas externas com menos conferência manual.',
+    icon: Bot,
+    className: '',
+    detail: 'webhook ativo',
+  },
+  {
+    title: 'Dashboards e relatórios',
+    description: 'Visões objetivas para acompanhar volume, gargalos, SLA, produtividade e resultados da operação.',
+    icon: TableProperties,
+    className: 'lg:col-span-2',
+    detail: 'métricas auditáveis',
+  },
+];
+
+const processSteps = [
+  ['01', 'Mapeamento', 'Entendemos onde o processo começa, quem participa, quais dados circulam e onde o improviso trava.'],
+  ['02', 'Arquitetura', 'Definimos telas, entidades, integrações, permissões e regras antes de começar a construir.'],
+  ['03', 'Construção', 'Desenvolvemos o sistema com foco em uso diário, clareza operacional e manutenção futura.'],
+  ['04', 'Validação', 'Testamos fluxos reais, estados de erro, dados e ajustes que aparecem quando a equipe usa.'],
+  ['05', 'Operação', 'Publicamos, orientamos o uso e acompanhamos os primeiros ciclos para estabilizar a rotina.'],
+];
+
+const StatusChip = ({ status }: { status: string }) => {
+  const styles = {
+    pendente: 'border-accent-orange/35 bg-accent-orange/10 text-accent-orange',
+    processado: 'border-accent-blue/35 bg-accent-blue/10 text-accent-blue',
+    concluído: 'border-[#44D7B6]/35 bg-[#44D7B6]/10 text-[#44D7B6]',
+  } as const;
+
+  return (
+    <span className={`rounded-[10px] border px-2.5 py-1 text-[10px] font-mono uppercase ${styles[status as keyof typeof styles]}`}>
+      {status}
+    </span>
+  );
+};
+
+const InterfaceMockup = () => (
+  <div className="system-shell">
+    <div className="system-topbar">
+      <div className="flex items-center gap-2">
+        <span className="h-2.5 w-2.5 rounded-full bg-accent-orange" />
+        <span className="h-2.5 w-2.5 rounded-full bg-accent-blue" />
+        <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
+      </div>
+      <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-text-muted">usenexora.ops</div>
+    </div>
+
+    <div className="grid min-h-[520px] lg:grid-cols-[190px_1fr]">
+      <aside className="hidden border-r border-accent-blue/14 bg-[#07101d]/75 p-4 lg:block">
+        <div className="mb-6 flex items-center gap-2 text-xs font-semibold text-white">
+          <PanelLeft className="h-4 w-4 text-accent-blue" />
+          Operação
+        </div>
+        {['Entrada', 'Processos', 'Clientes', 'Relatórios'].map((item, index) => (
+          <div
+            key={item}
+            className={`mb-2 flex items-center justify-between rounded-[10px] px-3 py-2.5 text-xs ${
+              index === 1 ? 'bg-accent-blue/10 text-white' : 'text-text-muted'
+            }`}
+          >
+            <span>{item}</span>
+            {index === 1 && <span className="h-1.5 w-1.5 rounded-full bg-accent-blue" />}
+          </div>
+        ))}
+      </aside>
+
+      <div className="p-4 sm:p-5">
+        <div className="mb-4 flex flex-col gap-3 border-b border-accent-blue/12 pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent-blue">Painel operacional</p>
+            <h3 className="mt-1 font-display text-xl font-semibold text-white">Fluxo de solicitações</h3>
+          </div>
+          <div className="flex w-fit items-center gap-2 rounded-[12px] border border-accent-orange/30 bg-accent-orange/10 px-3 py-2 text-xs font-semibold text-accent-orange">
+            <MessageCircle className="h-4 w-4" />
+            WhatsApp → Sistema → Relatório
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[
+            ['Registros hoje', '37', '+12%'],
+            ['Pendências', '08', '2 críticas'],
+            ['Tempo manual salvo', '41h', 'mês atual'],
+          ].map(([label, value, note]) => (
+            <div key={label} className="rounded-[14px] border border-accent-blue/16 bg-white/[0.035] p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-text-muted">{label}</p>
+                <Activity className="h-4 w-4 text-accent-blue" />
+              </div>
+              <div className="mt-3 flex items-end gap-2">
+                <span className="font-display text-3xl font-semibold text-white">{value}</span>
+                <span className="pb-1 text-[11px] text-text-muted">{note}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="rounded-[14px] border border-accent-blue/16 bg-[#0B1628]/72">
+            <div className="grid grid-cols-[1fr_1fr_auto] border-b border-accent-blue/12 px-4 py-3 text-[10px] font-mono uppercase tracking-widest text-text-muted">
+              <span>Registro</span>
+              <span>Status interno</span>
+              <span>Fila</span>
+            </div>
+            {recentRecords.map(([name, description, status]) => (
+              <div key={name} className="grid grid-cols-[1fr_1fr_auto] items-center gap-3 border-b border-white/[0.04] px-4 py-3 last:border-b-0">
+                <span className="text-sm font-semibold text-white">{name}</span>
+                <span className="text-sm text-text-muted">{description}</span>
+                <StatusChip status={status} />
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-[14px] border border-accent-blue/16 bg-[#07101d]/80 p-4">
+            <div className="mb-4 flex items-center gap-2">
+              <SquareTerminal className="h-4 w-4 text-accent-blue" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted">Logs de automação</span>
+            </div>
+            {[
+              '[08:02] lead recebido via WhatsApp',
+              '[08:02] CPF consultado no cadastro',
+              '[08:03] tarefa criada para financeiro',
+              '[08:04] relatório atualizado',
+            ].map((line, index) => (
+              <p key={line} className={`font-mono text-xs leading-7 ${index === 2 ? 'text-accent-orange' : 'text-text-muted'}`}>
+                {line}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {[
+            ['Entrada', FileSpreadsheet],
+            ['Integração', PlugZap],
+            ['Base única', Database],
+          ].map(([label, Icon], index) => (
+            <div key={label as string} className="relative overflow-hidden rounded-[14px] border border-accent-blue/14 bg-base-dark/62 p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-white">{label as string}</span>
+                <Icon className={`h-5 w-5 ${index === 1 ? 'text-accent-orange' : 'text-accent-blue'}`} />
+              </div>
+              <div className="mt-4 h-1.5 rounded-full bg-white/8">
+                <div className={`h-full rounded-full ${index === 1 ? 'w-[64%] bg-accent-orange' : 'w-[82%] bg-accent-blue'}`} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
 );
 
 export default function App() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleWhatsApp = () => {
-    const message = "Olá! Gostaria de solicitar um orçamento para um projeto de Presença Digital.";
-    const whatsappUrl = `https://wa.me/5562993552673?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
-
   const [showStatus, setShowStatus] = useState(false);
   const [activeModal, setActiveModal] = useState<null | 'terms' | 'privacy'>(null);
 
-  return (
-    <div className="min-h-screen bg-base-dark text-text-main font-sans selection:bg-accent-green selection:text-base-dark relative overflow-x-hidden">
-      
-      {/* Interactive Galaxy Background */}
-      <Starfield />
+  const handleWhatsApp = () => {
+    const message = 'Olá! Gostaria de solicitar um diagnóstico para um sistema web ou automação operacional.';
+    window.open(`https://wa.me/5562993552673?text=${encodeURIComponent(message)}`, '_blank');
+  };
 
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 border-b border-base-border/30 bg-base-dark/60 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <button 
-            onClick={scrollToTop}
-            className="text-2xl font-display font-bold tracking-tighter text-white flex items-center gap-2 hover:opacity-80 transition-opacity"
-          >
-            <div className="w-4 h-4 bg-accent-green shadow-[0_0_10px_rgba(20,200,113,0.5)]" />
-            UseNexora
+  return (
+    <div className="min-h-screen bg-base-dark text-text-main font-sans selection:bg-accent-blue selection:text-base-dark">
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[linear-gradient(120deg,rgba(20,156,255,0.09),transparent_30%),linear-gradient(180deg,#05070D_0%,#08111F_48%,#05070D_100%)]" />
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.06] bg-[linear-gradient(to_right,#149CFF_1px,transparent_1px),linear-gradient(to_bottom,#149CFF_1px,transparent_1px)] bg-[size:72px_72px]" />
+
+      <header className="fixed top-0 z-50 w-full border-b border-accent-blue/12 bg-[#05070D]/86 backdrop-blur-xl">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 text-left">
+            <img src="/favicon-32x32.png" alt="" className="h-9 w-9 rounded-[10px] border border-accent-blue/20" />
+            <span>
+              <span className="block font-display text-xl font-semibold tracking-tight text-white">Usenexora</span>
+              <span className="block text-[10px] font-mono uppercase tracking-[0.22em] text-text-muted">Automations & Web Systems</span>
+            </span>
           </button>
-          <div className="hidden md:flex items-center gap-8 text-sm font-mono tracking-widest text-text-muted uppercase font-semibold">
-            <a href="#services" className="hover:text-white transition-colors duration-200">O que fazemos</a>
-            <a href="#sobre" className="hover:text-white transition-colors duration-200">Quem Somos</a>
-            <a href="#contact" className="hover:text-white transition-colors duration-200">Contato</a>
-          </div>
-          <MagneticButton 
-            onClick={handleWhatsApp}
-            className="text-[10px] sm:text-xs px-4 sm:px-6 py-4"
-          >
-            Ver como funciona
+
+          <nav className="hidden items-center gap-7 lg:flex">
+            {navItems.map(([label, href]) => (
+              <a key={href} href={href} className="text-[12px] font-medium text-text-muted transition-colors hover:text-white">
+                {label}
+              </a>
+            ))}
+          </nav>
+
+          <MagneticButton onClick={handleWhatsApp} variant="solid" className="px-4 py-3 text-[11px] sm:px-5">
+            Contato
           </MagneticButton>
         </div>
-      </nav>
+      </header>
 
-      <main>
-        {/* 1. Hero Section - Centered, Grandiose */}
-        <section className="relative pt-40 pb-32 min-h-screen flex flex-col items-center justify-center overflow-hidden z-10">
-        <div className="max-w-5xl mx-auto px-6 relative z-30 flex flex-col items-center text-center">
-          
-          <Badge variant="outline" className="mb-8 rounded-none border-accent-green/50 text-accent-green font-mono uppercase tracking-widest px-4 py-1.5 glow-green bg-accent-green/5">
-            <Globe className="w-3 h-3 mr-2 inline" /> AGÊNCIA DE ALTA PERFORMANCE
-          </Badge>
-          
-          <h1 className="font-display text-3xl md:text-5xl leading-[1.15] font-bold text-white mb-8 tracking-tight uppercase max-w-4xl">
-            As pessoas chegam ao seu site e <br/>
-            <span className="text-[#00C46A]">saem sem falar com você?</span> <br/>
-            <div className="mt-6 flex flex-col gap-2 items-center">
-              <span className="bg-[#00C46A] text-base-dark px-4 py-1.5 inline-block text-2xl md:text-4xl">
-                Resolvemos os gargalos de conversão
-              </span>
-              <span className="bg-[#00C46A] text-base-dark px-4 py-1.5 inline-block text-2xl md:text-4xl">
-                para aumentar sua taxa de marcação.
-              </span>
+      <main className="relative z-10">
+        <section id="inicio" className="relative overflow-hidden pb-20 pt-32 sm:pt-40 lg:min-h-screen lg:pb-24">
+          <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-[0.88fr_1.12fr]">
+            <div className="max-w-2xl">
+              <div className="mb-7 inline-flex items-center gap-3 border-l-2 border-accent-orange bg-accent-orange/8 px-4 py-3">
+                <Rows3 className="h-4 w-4 text-accent-orange" />
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-muted">Sistemas internos, painéis e automações</span>
+              </div>
+
+              <h1 className="font-display text-[42px] font-semibold leading-[0.98] tracking-[-0.03em] text-white sm:text-6xl lg:text-[78px]">
+                Sistemas web para organizar o que hoje está no improviso
+              </h1>
+
+              <p className="mt-7 max-w-xl text-lg leading-8 text-text-muted sm:text-xl">
+                A Usenexora cria sistemas internos, painéis e automações para empresas que controlam processos em
+                planilhas, WhatsApp e conferência manual.
+              </p>
+
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <MagneticButton onClick={handleWhatsApp} variant="solid" className="px-7 py-4 text-sm">
+                  Solicitar diagnóstico
+                </MagneticButton>
+                <MagneticButton onClick={() => document.getElementById('sistemas')?.scrollIntoView({ behavior: 'smooth' })} className="px-7 py-4 text-sm">
+                  Ver sistemas
+                </MagneticButton>
+              </div>
+
+              <div className="mt-10 grid max-w-xl grid-cols-2 border-y border-accent-blue/12 text-sm sm:grid-cols-4">
+                {[
+                  ['4', 'frentes técnicas'],
+                  ['30d', 'primeiro ciclo'],
+                  ['API', 'integrações'],
+                  ['LGPD', 'base segura'],
+                ].map(([value, label]) => (
+                  <div key={label} className="border-r border-accent-blue/12 px-4 py-4 first:pl-0 last:border-r-0">
+                    <p className="font-display text-2xl font-semibold text-white">{value}</p>
+                    <p className="mt-1 text-xs text-text-muted">{label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </h1>
-          
-          <p className="text-text-muted text-lg md:text-xl font-sans max-w-2xl leading-relaxed mb-12">
-            Páginas personalizadas que passam autoridade e automações que agilizam o atendimento. Transformamos sua presença digital em um canal de vendas que não para de crescer.
-          </p>
-          
-          <div className="flex gap-4 mb-20">
-            <MagneticButton 
-              onClick={handleWhatsApp}
-              variant="solid"
-              className="text-sm md:text-base px-8 md:px-12 py-5 md:py-6"
-            >
-              Quero minha LP que vende
-            </MagneticButton>
-            <div className="mt-4 flex items-center justify-center gap-2 text-text-muted text-xs font-mono uppercase tracking-widest">
-              <ShieldCheck className="w-3 h-3 text-accent-green" />
-              Projeto entregue em até 7 dias com garantia de revisão
-            </div>
+
+            <InterfaceMockup />
           </div>
-        </div>
+        </section>
 
-        {/* Background Elements - Subtle and high-end */}
-        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent-green/5 blur-[120px] rounded-full"></div>
-          {/* Technical Grid Pattern */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#14C8711a_1px,transparent_1px),linear-gradient(to_bottom,#14C8711a_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
-        </div>
-
-        {/* Floating Mockup / Base Map beneath the text */}
-        <div className="relative w-full max-w-4xl mx-auto flex items-center justify-center mt-10 z-20">
-          <div className="absolute inset-0 bg-accent-green/5 blur-3xl rounded-full transform scale-150"></div>
-          {mounted && (
-            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-              <Orbiter radius={320} duration={30} delay={0} />
-              <Orbiter radius={240} duration={20} delay={-5} />
+        <section className="relative py-20 lg:py-28" id="sistemas">
+          <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-6 lg:grid-cols-[0.72fr_1.28fr]">
+            <div>
+              <p className="section-kicker">O problema operacional</p>
+              <h2 className="section-title">Quando a empresa cresce, o controle manual vira risco.</h2>
             </div>
-          )}
-          
-          <motion.div 
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
-            className="relative z-10 w-full aspect-video rounded-t-3xl overflow-hidden border-t border-x border-accent-green/30 shadow-[0_-20px_50px_rgba(20,200,113,0.15)]"
-          >
-            <div className="absolute inset-0 bg-base-dark mix-blend-color z-10"></div>
-            <img src="/images/dashboard_mockup.webp" alt="Nexora Metrics Dashboard" width="1200" height="675" loading="lazy" className="w-full h-full object-cover object-center relative z-0" />
-            <div className="absolute inset-0 bg-gradient-to-t from-base-dark via-base-dark/50 to-transparent z-20"></div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* 2. Prova Social (Depoimentos) */}
-      <section className="py-32 relative z-20 bg-base-dark/50 backdrop-blur-sm" id="depoimentos">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="mb-20 text-center">
-            <h2 className="font-display text-4xl font-bold text-white uppercase tracking-tight mb-4">
-              Resultados Reais de Quem Escolheu a Nexora
-            </h2>
-            <p className="font-mono text-text-muted uppercase tracking-widest text-sm">
-              Não é apenas um site novo, é o fim do desperdício de leads.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Testimonial 1 */}
-            <div className="bg-white/5 backdrop-blur-md border border-base-border/50 p-8 rounded-sm hover:border-[#00C46A]/40 transition-all duration-300 group">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-[#00C46A]/30">
-                  <img src="/images/testimonials/doctor_ricardo.webp" alt="Dr. Ricardo" width="48" height="48" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                ['Planilhas paralelas', 'Dados duplicados, versões conflitantes e pouca confiança na informação.'],
+                ['WhatsApp como sistema', 'Pedidos, aprovações e histórico ficam presos em conversas difíceis de auditar.'],
+                ['Conferência manual', 'Tempo do time consumido por checagem, cópia e atualização repetitiva.'],
+                ['Falta de visão', 'Sem painel, a liderança descobre gargalos tarde demais.'],
+              ].map(([title, text], index) => (
+                <div key={title} className={`problem-card ${index === 1 ? 'sm:translate-y-7' : ''}`}>
+                  <span className="font-mono text-[11px] text-accent-blue">0{index + 1}</span>
+                  <h3 className="mt-5 font-display text-2xl font-semibold text-white">{title}</h3>
+                  <p className="mt-3 leading-7 text-text-muted">{text}</p>
                 </div>
-                <div>
-                  <div className="text-white font-bold text-sm">Dr. Ricardo</div>
-                  <div className="text-text-muted text-[10px] uppercase font-mono tracking-wider">Clínica Bueno</div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="relative border-y border-accent-blue/10 bg-[#07101D]/70 py-20 lg:py-28" id="automacoes">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6">
+            <div className="mb-12 flex max-w-5xl flex-col justify-between gap-7 lg:flex-row lg:items-end">
+              <div>
+                <p className="section-kicker">Construímos ferramentas</p>
+                <h2 className="section-title max-w-3xl">O que desenvolvemos sem empacotar sua operação em um template.</h2>
+              </div>
+              <p className="max-w-sm text-base leading-7 text-text-muted">
+                Cada bloco abaixo representa uma parte de sistema: dados, fluxo, permissões, integração e leitura gerencial.
+              </p>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-3">
+              {solutionBlocks.map(({ title, description, icon: Icon, className, detail }) => (
+                <article key={title} className={`solution-card ${className}`}>
+                  <div className="flex items-start justify-between gap-5">
+                    <div>
+                      <span className="inline-flex items-center gap-2 rounded-[10px] border border-accent-blue/18 bg-accent-blue/8 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-accent-blue">
+                        <Icon className="h-3.5 w-3.5" />
+                        {detail}
+                      </span>
+                      <h3 className="mt-6 font-display text-2xl font-semibold text-white">{title}</h3>
+                    </div>
+                    <ArrowUpRight className="h-5 w-5 shrink-0 text-accent-orange" />
+                  </div>
+                  <p className="mt-4 max-w-2xl leading-7 text-text-muted">{description}</p>
+
+                  <div className="mt-8 grid gap-2 border-t border-accent-blue/10 pt-5 sm:grid-cols-3">
+                    {['entrada', 'regra', 'saída'].map((item, index) => (
+                      <div key={item} className="rounded-[10px] border border-white/[0.06] bg-white/[0.025] px-3 py-2 text-xs text-text-muted">
+                        <span className={index === 1 ? 'text-accent-orange' : 'text-accent-blue'}>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="relative py-20 lg:py-28">
+          <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="technical-panel">
+              <p className="section-kicker text-accent-orange">Não é só uma página bonita</p>
+              <h2 className="section-title">Um sistema precisa sobreviver ao uso real da equipe.</h2>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-text-muted">
+                A interface é desenhada para registrar decisões, reduzir retrabalho, manter histórico e transformar
+                rotina operacional em dados confiáveis.
+              </p>
+            </div>
+            <div className="space-y-3">
+              {[
+                ['Permissões', 'cada perfil vê e altera apenas o que precisa'],
+                ['Histórico', 'ações importantes ficam registradas para consulta'],
+                ['Integrações', 'dados entram e saem sem copiar e colar'],
+              ].map(([title, text]) => (
+                <div key={title} className="flex gap-4 rounded-[16px] border border-accent-blue/14 bg-card-alt/70 p-5">
+                  <CheckCircle2 className="mt-1 h-5 w-5 text-accent-blue" />
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-white">{title}</h3>
+                    <p className="mt-1 text-text-muted">{text}</p>
+                  </div>
                 </div>
-              </div>
-              <p className="text-white/80 text-base leading-relaxed italic">
-                "A nova página da Nexora reduziu nosso custo por lead em <span className="text-[#00C46A] font-bold">40%</span> em menos de um mês. O retorno foi imediato."
-              </p>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="relative border-y border-accent-blue/10 bg-[#07101D]/56 py-20 lg:py-28" id="processo">
+          <div className="mx-auto max-w-7xl px-5 sm:px-6">
+            <div className="mb-12 max-w-3xl">
+              <p className="section-kicker">Processo de desenvolvimento</p>
+              <h2 className="section-title">Do fluxo manual ao sistema em produção.</h2>
             </div>
 
-            {/* Testimonial 2 */}
-            <div className="bg-white/5 backdrop-blur-md border border-base-border/50 p-8 rounded-sm hover:border-[#00C46A]/40 transition-all duration-300 group">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-[#00C46A]/30">
-                  <img src="/images/testimonials/mariana_l.webp" alt="Mariana L." width="48" height="48" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+            <div className="process-rail">
+              {processSteps.map(([number, title, description]) => (
+                <div key={number} className="process-step">
+                  <span className="font-mono text-xs text-accent-orange">{number}</span>
+                  <h3 className="mt-4 font-display text-xl font-semibold text-white">{title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-text-muted">{description}</p>
                 </div>
-                <div>
-                  <div className="text-white font-bold text-sm">Mariana L.</div>
-                  <div className="text-text-muted text-[10px] uppercase font-mono tracking-wider">Gestora de Estética</div>
-                </div>
-              </div>
-              <p className="text-white/80 text-base leading-relaxed italic">
-                "O site antigo era lento e não convertia. Após a auditoria e nova LP, <span className="text-[#00C46A] font-bold">dobramos</span> nossos agendamentos via WhatsApp."
-              </p>
-            </div>
-
-            {/* Testimonial 3 */}
-            <div className="bg-white/5 backdrop-blur-md border border-base-border/50 p-8 rounded-sm hover:border-[#00C46A]/40 transition-all duration-300 group">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-[#00C46A]/30">
-                  <img src="/images/testimonials/carlos_eduardo.webp" alt="Carlos Eduardo" width="48" height="48" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
-                </div>
-                <div>
-                  <div className="text-white font-bold text-sm">Carlos Eduardo</div>
-                  <div className="text-text-muted text-[10px] uppercase font-mono tracking-wider">CEO NexoHub</div>
-                </div>
-              </div>
-              <p className="text-white/80 text-base leading-relaxed italic">
-                "Entrega recorde em <span className="text-[#00C46A] font-bold">7 dias</span> e uma performance que o Google finalmente reconhece com nota máxima."
-              </p>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* 3. A Solução (O que fazemos) */}
-      <section className="py-32 relative z-20" id="services">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="mb-24 text-center flex flex-col items-center">
-            <h2 className="font-display text-5xl font-bold text-white uppercase tracking-tight mb-4">
-              Arquitetura de Conversão
-            </h2>
-            <p className="font-mono text-text-muted uppercase tracking-widest text-sm max-w-2xl">
-              Como transformamos visitantes curisosos em clientes compradores.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            {/* Module 1 */}
-            <motion.div 
-              whileHover={{ scale: 1.02, rotateY: 2, rotateX: 2 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="bg-base-panel/50 backdrop-blur-md border border-base-border/50 p-10 group hover:border-accent-green/50 transition-colors duration-300 relative overflow-hidden flex flex-col h-full hover:shadow-[0_0_40px_rgba(20,200,113,0.1)] rounded-sm"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-accent-green/5 blur-3xl group-hover:bg-accent-green/20 transition-all duration-500"></div>
-              <div className="font-mono text-[10px] text-accent-green mb-8 uppercase tracking-widest flex items-center justify-between">
-                <span>Passo 01</span>
-                <Fingerprint className="w-5 h-5" />
-              </div>
-              <h3 className="font-display text-2xl font-bold text-white mb-4 tracking-wide uppercase">Identidade & Autoridade</h3>
-              <p className="text-text-muted font-sans text-base leading-relaxed mb-8 grow">
-                Não é apenas sobre estética. Definimos o tom, a voz e o posicionamento visual que fazem sua empresa ser percebida como a escolha premium do mercado.
+        <section className="relative py-20 lg:py-28" id="contato">
+          <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-6 lg:grid-cols-[0.82fr_1fr] lg:items-start">
+            <div>
+              <p className="section-kicker text-accent-orange">Diagnóstico</p>
+              <h2 className="section-title">Pronto para transformar processos manuais em sistemas?</h2>
+              <p className="mt-6 text-lg leading-8 text-text-muted">
+                Se sua empresa ainda depende de planilhas, mensagens soltas e retrabalho, a Usenexora pode criar uma
+                solução sob medida para organizar sua operação.
               </p>
-            </motion.div>
-
-            {/* Module 2 */}
-            <motion.div 
-              whileHover={{ scale: 1.02, rotateY: -2, rotateX: 2 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="bg-base-panel/50 backdrop-blur-md border border-base-border/50 p-10 group hover:border-accent-green/50 transition-colors duration-300 relative overflow-hidden flex flex-col h-full hover:shadow-[0_0_40px_rgba(20,200,113,0.1)] rounded-sm"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-3xl group-hover:bg-accent-green/20 transition-all duration-500"></div>
-              <div className="font-mono text-[10px] text-white mb-8 uppercase tracking-widest flex items-center justify-between">
-                <span>Passo 02</span>
-                <Globe className="w-5 h-5 text-accent-green" />
+              <div className="mt-8 flex items-center gap-3 border-l border-accent-blue/30 pl-4 text-sm text-text-muted">
+                <ShieldCheck className="h-5 w-5 text-accent-blue" />
+                Conversa inicial focada no processo, não em pacote pronto.
               </div>
-              <h3 className="font-display text-2xl font-bold text-white mb-4 tracking-wide uppercase">Ecossistema Digital</h3>
-              <p className="text-text-muted font-sans text-base leading-relaxed mb-8 grow">
-                Criamos infraestruturas digitais velozes e imersivas que funcionam em qualquer dispositivo, servindo como a vitrine oficial do seu sucesso.
-              </p>
-            </motion.div>
-
-            {/* Module 3 */}
-            <motion.div 
-              whileHover={{ scale: 1.02, rotateY: 2, rotateX: -2 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="bg-base-panel/50 backdrop-blur-md border border-base-border/50 p-10 group hover:border-accent-green/50 transition-colors duration-300 relative overflow-hidden flex flex-col h-full hover:shadow-[0_0_40px_rgba(20,200,113,0.1)] rounded-sm"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-accent-green/5 blur-3xl group-hover:bg-accent-green/20 transition-all duration-500"></div>
-              <div className="font-mono text-[10px] text-accent-green mb-8 uppercase tracking-widest flex items-center justify-between">
-                <span>Passo 03</span>
-                <Zap className="w-5 h-5" />
-              </div>
-              <h3 className="font-display text-2xl font-bold text-white mb-4 tracking-wide uppercase">Expansão de Mercado</h3>
-              <p className="text-text-muted font-sans text-base leading-relaxed mb-8 grow">
-                Otimizamos cada ponto de contato para garantir que sua presença digital não seja apenas vista, mas que gere crescimento real e previsível.
-              </p>
-            </motion.div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Como Funciona (Processo) */}
-      <section className="py-32 relative z-20 border-y border-base-border/20 bg-base-panel/20" id="processo">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="mb-20 text-center">
-            <h2 className="font-display text-4xl font-bold text-white uppercase tracking-tight mb-4">
-              O Processo UseNexora
-            </h2>
-            <p className="font-mono text-text-muted uppercase tracking-widest text-sm">
-              Do briefing ao faturamento em tempo recorde.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {/* Step 01 */}
-            <div className="flex flex-col items-center text-center group">
-              <div className="w-16 h-16 bg-[#00C46A]/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-[#00C46A]/20 transition-colors duration-300">
-                <span className="font-display text-2xl font-bold text-[#00C46A]">01</span>
-              </div>
-              <h3 className="font-display text-xl font-bold text-white uppercase mb-3">Briefing Estratégico</h3>
-              <p className="text-text-muted text-sm leading-relaxed max-w-xs">
-                Entendemos o seu público e mapeamos seus diferenciais em uma conversa rápida e sem enrolação.
-              </p>
             </div>
 
-            {/* Step 02 */}
-            <div className="flex flex-col items-center text-center group">
-              <div className="w-16 h-16 bg-[#00C46A]/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-[#00C46A]/20 transition-colors duration-300">
-                <span className="font-display text-2xl font-bold text-[#00C46A]">02</span>
-              </div>
-              <h3 className="font-display text-xl font-bold text-white uppercase mb-3">Desenvolvimento Ágil</h3>
-              <p className="text-text-muted text-sm leading-relaxed max-w-xs">
-                Criamos sua página focada em performance e conversão, do design exclusivo ao código limpo.
-              </p>
-            </div>
-
-            {/* Step 03 */}
-            <div className="flex flex-col items-center text-center group">
-              <div className="w-16 h-16 bg-[#00C46A]/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-[#00C46A]/20 transition-colors duration-300">
-                <span className="font-display text-2xl font-bold text-[#00C46A]">03</span>
-              </div>
-              <h3 className="font-display text-xl font-bold text-white uppercase mb-3">Entrega e Revisão</h3>
-              <p className="text-text-muted text-sm leading-relaxed max-w-xs">
-                Seu site no ar em até 7 dias com garantia de revisão e suporte total para os ajustes finais.
-              </p>
+            <div className="rounded-[18px] border border-accent-blue/16 bg-[#0B1628]/72 p-5 sm:p-8">
+              <ContactForm />
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* 5. Autoridade/Filosofia (Quem Somos) - Asymmetrical Layout */}
-      <section className="py-32 relative z-20" id="sobre">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row gap-20 items-center">
-          <div className="lg:w-1/2 relative">
-            <div className="absolute top-0 left-0 w-1 h-full bg-accent-green"></div>
-            <div className="pl-10">
-              <h3 className="font-mono text-sm text-accent-green uppercase tracking-widest mb-6 flex items-center gap-2">
-                <Target className="w-4 h-4" /> Nosso Padrão
-              </h3>
-              <p className="font-display text-4xl md:text-5xl text-white font-bold uppercase leading-snug">
-                "Não montamos sites genéricos. <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-text-muted">
-                  Construímos sua presença digital dominante."
-                </span>
-              </p>
-            </div>
-          </div>
-          <div className="lg:w-1/2">
-            <h2 className="font-display text-3xl font-bold text-white uppercase tracking-tight mb-6">Nossa Filosofia</h2>
-            <p className="text-text-muted font-sans text-xl leading-relaxed">
-              Acreditamos que sua marca não é apenas o que você vende, mas como o mundo a percebe. Onde a maioria vê apenas estética, nós aplicamos engenharia de autoridade para criar um ecossistema digital que trabalha para você 24/7, posicionando sua empresa como a única solução óbvia.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Garantia */}
-      <section className="py-20 relative z-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="bg-base-panel/40 backdrop-blur-md border border-[#00C46A]/30 p-12 text-center relative overflow-hidden rounded-sm shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00C46A]/5 blur-3xl pointer-events-none"></div>
-            <div className="w-16 h-16 bg-[#00C46A]/10 mx-auto flex items-center justify-center mb-8 rounded-full">
-              <ShieldCheck className="text-[#00C46A] w-8 h-8" />
-            </div>
-            <h2 className="font-display text-3xl font-bold text-white uppercase tracking-tight mb-4">
-              Nossa Garantia de Excelência
-            </h2>
-              <p className="text-white text-xl font-sans mb-6 leading-relaxed">
-              Se você não ficar 100% satisfeito com a entrega da sua Landing Page, <span className="text-[#00C46A] font-bold">nós a refazemos sem qualquer custo adicional.</span>
-            </p>
-            <p className="text-text-muted font-mono uppercase tracking-widest text-xs">
-              Nosso compromisso é com o seu resultado e a autoridade da sua marca.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. CTA Final + Form */}
-      <section className="py-24 relative z-20" id="contact">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="w-16 h-16 bg-[#00C46A]/10 mx-auto flex items-center justify-center mb-8 rounded-full shadow-[0_0_30px_rgba(0,196,106,0.1)]">
-            <Zap className="text-[#00C46A] w-8 h-8" />
-          </div>
-          <h2 className="font-display text-5xl md:text-6xl font-bold text-white uppercase tracking-tight mb-6">
-            Inicie sua transformação digital
-          </h2>
-          <p className="text-text-muted font-mono uppercase tracking-widest text-sm mb-16 max-w-2xl mx-auto">
-            Nossa agenda aceita um número limitado de novos projetos por mês para garantir extrema qualidade.
-          </p>
-          
-          <ContactForm />
-
-          <div className="mt-8 flex items-center justify-center gap-2 text-text-muted text-[10px] font-mono uppercase tracking-[0.2em]">
-            <ShieldCheck className="w-3 h-3 text-[#00C46A]" />
-            Seus dados estão seguros e protegidos
-          </div>
-        </div>
-      </section>
+        </section>
       </main>
 
-      {/* Minimalist Footer */}
-      <footer className="py-12 bg-base-panel/50 backdrop-blur-md border-t border-base-border/30 text-center relative z-20">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs font-mono text-text-muted uppercase tracking-widest">
-          <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <div className="w-2 h-2 bg-accent-green" />
-            USENEXORA &copy; {new Date().getFullYear()} &bull; PRESENÇA DIGITAL
+      <footer className="relative z-10 border-t border-accent-blue/10 bg-[#05070D] py-10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 text-sm text-text-muted sm:px-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="font-display text-lg font-semibold text-white">Usenexora</p>
+            <p className="mt-1">Sistemas web e automações operacionais para empresas em crescimento.</p>
           </div>
-          <div className="flex gap-6">
-            <button onClick={() => setActiveModal('terms')} className="hover:text-white transition-colors">Termos</button>
-            <button onClick={() => setActiveModal('privacy')} className="hover:text-white transition-colors">Privacidade</button>
-            <button 
-              onClick={() => setShowStatus(!showStatus)} 
-              className={`flex items-center gap-2 transition-colors ${showStatus ? 'text-accent-green' : 'hover:text-accent-green'}`}
-            >
-              <Lock className="w-3 h-3" /> INFRA SEGURA
+          <div className="flex flex-wrap gap-5">
+            <button onClick={() => setActiveModal('terms')} className="hover:text-white">Termos</button>
+            <button onClick={() => setActiveModal('privacy')} className="hover:text-white">Privacidade</button>
+            <button onClick={() => setShowStatus(!showStatus)} className="inline-flex items-center gap-2 hover:text-white">
+              <Lock className="h-4 w-4" />
+              Infra segura
             </button>
           </div>
         </div>
       </footer>
 
-      {/* Security Status Card (Floating) */}
-      <AnimatePresence>
-        {showStatus && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-24 right-6 z-50 w-72 bg-base-panel/90 backdrop-blur-xl border border-accent-green/30 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-sm"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-accent-green font-mono text-[10px] uppercase tracking-widest">
-                <ShieldCheck className="w-4 h-4" /> System Status
-              </div>
-              <button onClick={() => setShowStatus(false)} className="text-text-muted hover:text-white">
-                <X className="w-4 h-4" />
-              </button>
+      {showStatus && (
+        <div className="fixed bottom-6 right-5 z-50 w-[calc(100vw-40px)] max-w-sm rounded-[16px] border border-accent-blue/22 bg-[#08111F]/95 p-5 shadow-2xl backdrop-blur-xl sm:right-6">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-accent-blue">
+              <ShieldCheck className="h-4 w-4" />
+              Status técnico
             </div>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-text-muted text-xs font-mono">SERVER UPTIME</span>
-                <span className="text-white text-xs font-mono">99.98%</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-text-muted text-xs font-mono">SSL ENCRYPTION</span>
-                <span className="text-accent-green text-xs font-mono">ACTIVE (AES-256)</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-text-muted text-xs font-mono">CDN EDGE</span>
-                <span className="text-white text-xs font-mono">GLOBAL (VERCEL)</span>
-              </div>
-              <div className="pt-2 border-t border-base-border/30">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
-                  <span className="text-[10px] text-accent-green font-mono uppercase tracking-tighter">Todos os sistemas operacionais</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Compliance Modal (Terms / Privacy) */}
-      <AnimatePresence>
-        {activeModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveModal(null)}
-              className="absolute inset-0 bg-base-dark/80 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-2xl bg-base-panel border border-base-border p-10 shadow-2xl rounded-sm"
-            >
-              <button 
-                onClick={() => setActiveModal(null)}
-                className="absolute top-6 right-6 text-text-muted hover:text-white transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-              
-              <h3 className="font-display text-3xl font-bold text-white uppercase tracking-tight mb-6">
-                {activeModal === 'terms' ? 'Termos de Serviço' : 'Política de Privacidade'}
-              </h3>
-              
-              <div className="prose prose-invert max-h-[60vh] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-base-border">
-                <p className="text-text-muted leading-relaxed mb-4">
-                  A <strong>UseNexora</strong> preza pela transparência e segurança total dos dados de seus clientes e parceiros. 
-                </p>
-                <p className="text-text-muted leading-relaxed mb-4">
-                  Como uma consultoria de presença digital premium, todos os nossos contratos são regidos pelas leis brasileiras de proteção de dados (LGPD) e garantem a propriedade intelectual total dos ativos desenvolvidos para nossos contratantes.
-                </p>
-                <h4 className="text-white font-bold mt-6 mb-2">Segurança de Dados</h4>
-                <p className="text-text-muted leading-relaxed mb-4">
-                  Não compartilhamos métricas ou estratégias de nossos clientes com terceiros. Sua vantagem competitiva é protegida por cláusulas rigorosas de confidencialidade.
-                </p>
-                <p className="text-text-muted leading-relaxed">
-                  Para mais detalhes sobre contratos específicos, entre em contato através do nosso canal oficial no WhatsApp.
-                </p>
-              </div>
-              
-              <div className="mt-10 pt-6 border-t border-base-border/30 flex justify-end">
-                <button 
-                  onClick={() => setActiveModal(null)}
-                  className="px-8 py-3 bg-white text-base-dark font-bold uppercase tracking-widest text-xs hover:bg-accent-green transition-colors"
-                >
-                  Entendido
-                </button>
-              </div>
-            </motion.div>
+            <button onClick={() => setShowStatus(false)} className="text-text-muted hover:text-white" aria-label="Fechar status">
+              <X className="h-4 w-4" />
+            </button>
           </div>
-        )}
-      </AnimatePresence>
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between"><span className="text-text-muted">Ambiente</span><span className="text-white">Monitorado</span></div>
+            <div className="flex justify-between"><span className="text-text-muted">SSL</span><span className="text-accent-blue">Ativo</span></div>
+            <div className="flex justify-between"><span className="text-text-muted">Contato</span><span className="text-white">WhatsApp</span></div>
+          </div>
+        </div>
+      )}
 
+      {activeModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
+          <button className="absolute inset-0 bg-base-dark/84 backdrop-blur-sm" onClick={() => setActiveModal(null)} aria-label="Fechar" />
+          <div className="relative w-full max-w-2xl rounded-[18px] border border-accent-blue/16 bg-[#0B1628] p-7 shadow-2xl sm:p-9">
+            <button onClick={() => setActiveModal(null)} className="absolute right-6 top-6 text-text-muted hover:text-white" aria-label="Fechar modal">
+              <X className="h-5 w-5" />
+            </button>
+            <h3 className="font-display text-3xl font-semibold text-white">
+              {activeModal === 'terms' ? 'Termos de Serviço' : 'Política de Privacidade'}
+            </h3>
+            <div className="mt-6 space-y-4 leading-7 text-text-muted">
+              <p>A Usenexora trata informações de diagnóstico, processos, acessos e regras de negócio como dados estratégicos do cliente.</p>
+              <p>Projetos de sistemas web, automações e integrações são conduzidos com confidencialidade e foco em segurança operacional.</p>
+              <p>Não compartilhamos processos, métricas ou acessos com terceiros sem autorização expressa.</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
