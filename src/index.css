@@ -232,8 +232,24 @@ html {
     @apply rounded-[18px] border border-accent-blue/14 bg-[#0B1628]/68 p-6 shadow-[0_18px_50px_rgba(0,0,0,0.18)];
   }
 
+  .compare-card {
+    @apply rounded-[20px] border border-accent-blue/16 bg-[#0B1628]/72 p-6 sm:p-8;
+  }
+
+  .compare-card-before {
+    @apply border-accent-orange/18 bg-[#0B1628]/52;
+  }
+
+  .example-card {
+    @apply min-h-[190px] rounded-[18px] border border-accent-blue/15 bg-[#0B1628]/72 p-5 transition-colors duration-300 hover:border-accent-blue/34;
+  }
+
   .solution-card {
     @apply rounded-[18px] border border-accent-blue/16 bg-[#0B1628]/78 p-6 transition-colors duration-300 hover:border-accent-blue/36 sm:p-7;
+  }
+
+  .service-row {
+    @apply grid gap-4 rounded-[18px] border border-accent-blue/14 bg-[#0B1628]/68 p-5 sm:grid-cols-[48px_1fr] sm:p-6;
   }
 
   .technical-panel {
