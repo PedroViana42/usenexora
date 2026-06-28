@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { MagneticButton } from './components/MagneticButton';
 
-const SITE_URL = 'https://www.usenexora.online';
+export const SITE_URL = 'https://www.usenexora.online';
 const WHATSAPP_NUMBER = '5562993552673';
 const WHATSAPP_MESSAGE = 'Olá, quero entender como transformar um processo manual da minha empresa em sistema.';
 
@@ -33,7 +33,7 @@ type FeatureItem = {
   text: string;
 };
 
-type PageContent = {
+export type PageContent = {
   path: string;
   keyword: string;
   title: string;
@@ -52,7 +52,7 @@ type PageContent = {
   faq: FaqItem[];
 };
 
-const homePage: PageContent = {
+export const homePage: PageContent = {
   path: '/',
   keyword: 'sistemas web para empresas',
   title: 'Usenexora | Sistemas Web, Automações e Painéis para Empresas',
@@ -113,7 +113,7 @@ const homePage: PageContent = {
   ],
 };
 
-const pages: PageContent[] = [
+export const pages: PageContent[] = [
   homePage,
   {
     path: '/sistemas-web',
@@ -397,7 +397,7 @@ const futurePages = [
   '/sistema-de-entregas',
 ];
 
-const organizationSchema = {
+export const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   name: 'Usenexora',
@@ -421,7 +421,20 @@ const organizationSchema = {
   ],
 };
 
-const getCanonical = (path: string) => `${SITE_URL}${path === '/' ? '/' : path}`;
+export const getCanonical = (path: string) => `${SITE_URL}${path === '/' ? '/' : path}`;
+
+export const getFaqSchema = (page: PageContent) => ({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: page.faq.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+});
 
 const upsertMeta = (selector: string, create: () => HTMLMetaElement | HTMLLinkElement, valueKey: string, value: string) => {
   let element = document.head.querySelector(selector) as HTMLMetaElement | HTMLLinkElement | null;
@@ -443,8 +456,8 @@ const setJsonLd = (id: string, data: unknown) => {
   script.textContent = JSON.stringify(data);
 };
 
-const getCurrentPage = () => {
-  const normalizedPath = window.location.pathname.replace(/\/$/, '') || '/';
+export const getPageByPath = (path: string) => {
+  const normalizedPath = path.replace(/\/$/, '') || '/';
   return pages.find((page) => page.path === normalizedPath) ?? homePage;
 };
 
@@ -490,10 +503,17 @@ const MiniDashboard = () => (
   </div>
 );
 
-export default function App() {
+type AppProps = {
+  initialPath?: string;
+};
+
+export default function App({ initialPath }: AppProps = {}) {
   const [showStatus, setShowStatus] = useState(false);
   const [activeModal, setActiveModal] = useState<null | 'terms' | 'privacy'>(null);
-  const page = useMemo(getCurrentPage, []);
+  const page = useMemo(
+    () => getPageByPath(initialPath ?? (typeof window === 'undefined' ? '/' : window.location.pathname)),
+    [initialPath],
+  );
   const canonical = getCanonical(page.path);
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
   const openWhatsApp = () => window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
@@ -537,18 +557,7 @@ export default function App() {
     });
 
     setJsonLd('usenexora-organization-schema', organizationSchema);
-    setJsonLd('usenexora-faq-schema', {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: page.faq.map((item) => ({
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: item.answer,
-        },
-      })),
-    });
+    setJsonLd('usenexora-faq-schema', getFaqSchema(page));
   }, [canonical, page]);
 
   return (
