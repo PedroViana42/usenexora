@@ -397,6 +397,7 @@ export const organizationSchema = {
   '@type': 'ProfessionalService',
   name: 'Usenexora',
   url: SITE_URL,
+  logo: `${SITE_URL}/favicon-192x192.png`,
   description: 'Desenvolvimento de sistemas web, automações, dashboards e integrações para empresas.',
   telephone: '+5562993552673',
   areaServed: ['Goiânia', 'Goiás', 'Atendimento remoto'],
