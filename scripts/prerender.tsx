@@ -59,7 +59,7 @@ const injectHead = (html: string, page: PageContent) => {
     },
     {
       selector: /<meta property="og:image" content="[^"]*" \/>/,
-      tag: `<meta property="og:image" content="${SITE_URL}/images/interface.png" />`,
+      tag: `<meta property="og:image" content="${SITE_URL}/images/interface-dashboard.jpg" />`,
     },
     {
       selector: /<meta name="twitter:title" content="[^"]*" \/>/,
@@ -71,7 +71,7 @@ const injectHead = (html: string, page: PageContent) => {
     },
     {
       selector: /<meta name="twitter:image" content="[^"]*" \/>/,
-      tag: `<meta name="twitter:image" content="${SITE_URL}/images/interface.png" />`,
+      tag: `<meta name="twitter:image" content="${SITE_URL}/images/interface-dashboard.jpg" />`,
     },
   ];
 
@@ -87,6 +87,11 @@ const injectHead = (html: string, page: PageContent) => {
   return nextHtml.replace('</head>', `    ${jsonLd}\n  </head>`);
 };
 
+const removeClientScripts = (html: string) =>
+  html
+    .replace(/\s*<script type="module"[^>]*><\/script>/g, '')
+    .replace(/\s*<link rel="modulepreload"[^>]*>/g, '');
+
 const getOutputPath = (routePath: string) => {
   if (routePath === '/') {
     return path.join(distDir, 'index.html');
@@ -100,7 +105,9 @@ const template = await readFile(templatePath, 'utf8');
 await Promise.all(
   pages.map(async (page) => {
     const appHtml = renderToString(<App initialPath={page.path} />);
-    const html = injectHead(template, page).replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+    const html = removeClientScripts(
+      injectHead(template, page).replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`),
+    );
     const outputPath = getOutputPath(page.path);
 
     await mkdir(path.dirname(outputPath), { recursive: true });

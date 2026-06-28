@@ -1,21 +1,16 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   ArrowUpRight,
   BarChart3,
-  Bot,
   CheckCircle2,
   ClipboardList,
   Database,
   FileSpreadsheet,
   LayoutDashboard,
-  Lock,
   MapPin,
   MessageCircle,
   PlugZap,
   Rows3,
-  ShieldCheck,
-  SquareTerminal,
-  X,
 } from 'lucide-react';
 import { MagneticButton } from './components/MagneticButton';
 
@@ -480,8 +475,12 @@ const MiniDashboard = () => (
 
     <div className="relative z-10 grid gap-4 p-4 sm:p-5">
       <img
-        src="/images/interface.png"
+        src="/images/interface-dashboard.jpg"
         alt="Interface de sistema web com painel administrativo e indicadores operacionais"
+        width="768"
+        height="768"
+        fetchPriority="high"
+        decoding="async"
         className="h-auto w-full rounded-[16px] border border-accent-blue/14 object-cover"
       />
       <div className="grid gap-3 sm:grid-cols-3">
@@ -508,15 +507,12 @@ type AppProps = {
 };
 
 export default function App({ initialPath }: AppProps = {}) {
-  const [showStatus, setShowStatus] = useState(false);
-  const [activeModal, setActiveModal] = useState<null | 'terms' | 'privacy'>(null);
   const page = useMemo(
     () => getPageByPath(initialPath ?? (typeof window === 'undefined' ? '/' : window.location.pathname)),
     [initialPath],
   );
   const canonical = getCanonical(page.path);
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
-  const openWhatsApp = () => window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 
   useEffect(() => {
     document.documentElement.lang = 'pt-BR';
@@ -541,11 +537,11 @@ export default function App({ initialPath }: AppProps = {}) {
       ['property', 'og:title', 'content', page.title],
       ['property', 'og:description', 'content', page.description],
       ['property', 'og:url', 'content', canonical],
-      ['property', 'og:image', 'content', `${SITE_URL}/images/interface.png`],
+      ['property', 'og:image', 'content', `${SITE_URL}/images/interface-dashboard.jpg`],
       ['name', 'twitter:card', 'content', 'summary_large_image'],
       ['name', 'twitter:title', 'content', page.title],
       ['name', 'twitter:description', 'content', page.description],
-      ['name', 'twitter:image', 'content', `${SITE_URL}/images/interface.png`],
+      ['name', 'twitter:image', 'content', `${SITE_URL}/images/interface-dashboard.jpg`],
     ];
 
     metas.forEach(([attrName, attrValue, valueKey, value]) => {
@@ -568,7 +564,13 @@ export default function App({ initialPath }: AppProps = {}) {
       <header className="fixed top-0 z-50 w-full border-b border-accent-blue/12 bg-[#05070D]/88 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6">
           <a href="/" className="flex items-center gap-3 text-left">
-            <img src="/favicon-32x32.png" alt="Logo da Usenexora" className="h-9 w-9 rounded-[10px] border border-accent-blue/20" />
+            <img
+              src="/favicon-32x32.png"
+              alt="Logo da Usenexora"
+              width="32"
+              height="32"
+              className="h-9 w-9 rounded-[10px] border border-accent-blue/20"
+            />
             <span>
               <span className="block font-display text-xl font-semibold tracking-tight text-white">Usenexora</span>
               <span className="block text-[10px] font-mono uppercase tracking-[0.22em] text-text-muted">Sistemas e automações</span>
@@ -583,7 +585,7 @@ export default function App({ initialPath }: AppProps = {}) {
             <NavLink href="/sistemas-web-goiania">Goiânia</NavLink>
           </nav>
 
-          <MagneticButton onClick={openWhatsApp} variant="solid" className="px-4 py-3 text-[11px] sm:px-5">
+          <MagneticButton href={whatsappUrl} target="_blank" rel="noopener noreferrer" variant="solid" className="px-4 py-3 text-[11px] sm:px-5">
             Conversar no WhatsApp
           </MagneticButton>
         </div>
@@ -605,7 +607,7 @@ export default function App({ initialPath }: AppProps = {}) {
               <p className="mt-7 max-w-xl text-lg leading-8 text-text-muted sm:text-xl">{page.subtitle}</p>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <MagneticButton onClick={openWhatsApp} variant="solid" className="px-7 py-4 text-sm">
+                <MagneticButton href={whatsappUrl} target="_blank" rel="noopener noreferrer" variant="solid" className="px-7 py-4 text-sm">
                   Conversar no WhatsApp
                 </MagneticButton>
                 <a
@@ -744,7 +746,7 @@ export default function App({ initialPath }: AppProps = {}) {
               <p className="mb-5 text-sm leading-7 text-text-muted">
                 Sem formulário. A conversa vai direto para o WhatsApp para entender o contexto com mais rapidez.
               </p>
-              <MagneticButton onClick={openWhatsApp} variant="solid" className="w-full px-7 py-4 text-sm">
+              <MagneticButton href={whatsappUrl} target="_blank" rel="noopener noreferrer" variant="solid" className="w-full px-7 py-4 text-sm">
                 Conversar no WhatsApp
               </MagneticButton>
             </div>
@@ -768,57 +770,10 @@ export default function App({ initialPath }: AppProps = {}) {
                 {item.path === '/' ? 'Home' : item.path.replace('/', '')}
               </a>
             ))}
-            <button onClick={openWhatsApp} className="text-accent-orange hover:text-white">WhatsApp</button>
-            <button onClick={() => setActiveModal('terms')} className="hover:text-white">Termos</button>
-            <button onClick={() => setActiveModal('privacy')} className="hover:text-white">Privacidade</button>
-            <button onClick={() => setShowStatus(!showStatus)} className="inline-flex items-center gap-2 hover:text-white">
-              <Lock className="h-4 w-4" />
-              Infra segura
-            </button>
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-accent-orange hover:text-white">WhatsApp</a>
           </div>
         </div>
       </footer>
-
-      {showStatus && (
-        <div className="fixed bottom-6 right-5 z-50 w-[calc(100vw-40px)] max-w-sm rounded-[16px] border border-accent-blue/22 bg-[#08111F]/95 p-5 shadow-2xl backdrop-blur-xl sm:right-6">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-accent-blue">
-              <ShieldCheck className="h-4 w-4" />
-              Status técnico
-            </div>
-            <button onClick={() => setShowStatus(false)} className="text-text-muted hover:text-white" aria-label="Fechar status">
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between"><span className="text-text-muted">Contato</span><span className="text-white">WhatsApp</span></div>
-            <div className="flex justify-between"><span className="text-text-muted">Projetos</span><span className="text-accent-blue">Sob medida</span></div>
-            <div className="flex justify-between"><span className="text-text-muted">Escopo</span><span className="text-white">Sistemas internos</span></div>
-          </div>
-        </div>
-      )}
-
-      {activeModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
-          <button className="absolute inset-0 bg-base-dark/84 backdrop-blur-sm" onClick={() => setActiveModal(null)} aria-label="Fechar" />
-          <div className="relative w-full max-w-2xl rounded-[18px] border border-accent-blue/16 bg-[#0B1628] p-7 shadow-2xl sm:p-9">
-            <button onClick={() => setActiveModal(null)} className="absolute right-6 top-6 text-text-muted hover:text-white" aria-label="Fechar modal">
-              <X className="h-5 w-5" />
-            </button>
-            <h3 className="font-display text-3xl font-semibold text-white">
-              {activeModal === 'terms' ? 'Termos de Serviço' : 'Política de Privacidade'}
-            </h3>
-            <div className="mt-6 space-y-4 leading-7 text-text-muted">
-              <p>A Usenexora trata informações de processos, acessos, arquivos e regras de negócio como dados estratégicos do cliente.</p>
-              <p>Projetos de sistemas web, automações e integrações são conduzidos com confidencialidade e foco em segurança operacional.</p>
-              <p>Não compartilhamos processos, métricas ou acessos com terceiros sem autorização expressa.</p>
-              {activeModal === 'privacy' && (
-                <p>O contato principal do site acontece pelo WhatsApp, sem formulário próprio coletando dados adicionais na página.</p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="hidden" aria-hidden="true">
         {futurePages.join(', ')}
