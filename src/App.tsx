@@ -53,10 +53,10 @@ export const homePage: PageContent = {
   title: 'Usenexora | Sistemas Web, Automações e Painéis para Empresas',
   description:
     'A Usenexora cria sistemas web, automações e painéis internos para empresas que querem reduzir retrabalho, organizar processos e integrar ferramentas como WhatsApp, planilhas e bancos de dados.',
-  h1: 'Sistemas web para empresas que ainda dependem de planilhas, WhatsApp e retrabalho',
-  eyebrow: 'Sistemas internos, automações e dashboards',
+  h1: 'Sistemas web para organizar o que hoje está no improviso',
+  eyebrow: 'Sistemas internos, automações e painéis',
   subtitle:
-    'A Usenexora cria sistemas internos, automações, dashboards e integrações para organizar processos, reduzir tarefas manuais e dar mais controle à operação da sua empresa.',
+    'A Usenexora cria sistemas internos, painéis e automações para empresas que controlam processos em planilhas, WhatsApp e conferência manual.',
   primarySectionTitle: 'O que a Usenexora faz',
   primarySectionText: [
     'Criamos sistemas web sob medida para rotinas que não cabem mais em planilhas soltas, mensagens de grupo e conferência manual.',
@@ -474,7 +474,28 @@ const MiniDashboard = () => (
       <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-text-muted">usenexora.ops</div>
     </div>
 
-    <div className="relative z-10 grid gap-4 p-4 sm:p-5">
+      <div className="relative z-10 grid gap-4 p-4 sm:p-5">
+      <div className="rounded-[16px] border border-accent-blue/14 bg-[#07101D]/78 p-4 sm:hidden">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent-blue">Fluxo operacional</p>
+            <h3 className="mt-1 font-display text-lg font-semibold text-white">Pedidos e pendências</h3>
+          </div>
+          <MessageCircle className="h-5 w-5 text-accent-orange" />
+        </div>
+        <div className="grid gap-2 text-xs">
+          {[
+            ['Pedido #1842', 'pendente'],
+            ['Cliente Martins', 'processado'],
+            ['Relatório diário', 'concluído'],
+          ].map(([label, status]) => (
+            <div key={label} className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-[10px] border border-white/[0.05] bg-white/[0.025] px-3 py-2">
+              <span className="font-semibold text-white">{label}</span>
+              <span className={status === 'pendente' ? 'text-accent-orange' : 'text-accent-blue'}>{status}</span>
+            </div>
+          ))}
+        </div>
+      </div>
       <img
         src="/images/interface-dashboard.jpg"
         alt="Interface de sistema web com painel administrativo e indicadores operacionais"
@@ -482,9 +503,9 @@ const MiniDashboard = () => (
         height="768"
         fetchPriority="high"
         decoding="async"
-        className="h-auto w-full rounded-[16px] border border-accent-blue/14 object-cover"
+        className="hidden h-auto w-full rounded-[16px] border border-accent-blue/14 object-cover sm:block"
       />
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="hidden gap-3 sm:grid sm:grid-cols-3">
         {[
           ['Registros hoje', '37', BarChart3],
           ['Pendências', '08', ClipboardList],
@@ -587,13 +608,14 @@ export default function App({ initialPath }: AppProps = {}) {
           </nav>
 
           <MagneticButton href={whatsappUrl} target="_blank" rel="noopener noreferrer" variant="solid" className="px-4 py-3 text-[11px] sm:px-5">
-            Conversar no WhatsApp
+            <span className="sm:hidden">WhatsApp</span>
+            <span className="hidden sm:inline">Conversar no WhatsApp</span>
           </MagneticButton>
         </div>
       </header>
 
       <main className="relative z-10">
-        <section className="relative overflow-hidden pb-20 pt-32 sm:pt-40 lg:pb-24">
+        <section className="relative overflow-hidden pb-14 pt-28 sm:pb-20 sm:pt-40 lg:pb-24">
           <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="max-w-2xl">
               <div className="mb-7 inline-flex items-center gap-3 border-l-2 border-accent-orange bg-accent-orange/8 px-4 py-3">
@@ -601,15 +623,16 @@ export default function App({ initialPath }: AppProps = {}) {
                 <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-text-muted">{page.eyebrow}</span>
               </div>
 
-              <h1 className="font-display text-[40px] font-semibold leading-[1.02] text-white sm:text-6xl lg:text-[74px]">
+              <h1 className="font-display text-[34px] font-semibold leading-[1.04] text-white sm:text-6xl lg:text-[74px]">
                 {page.h1}
               </h1>
 
-              <p className="mt-7 max-w-xl text-lg leading-8 text-text-muted sm:text-xl">{page.subtitle}</p>
+              <p className="mt-6 max-w-xl text-base leading-7 text-text-muted sm:mt-7 sm:text-xl sm:leading-8">{page.subtitle}</p>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <MagneticButton href={whatsappUrl} target="_blank" rel="noopener noreferrer" variant="solid" className="px-7 py-4 text-sm">
-                  Conversar no WhatsApp
+                  <span className="sm:hidden">WhatsApp</span>
+                  <span className="hidden sm:inline">Conversar no WhatsApp</span>
                 </MagneticButton>
                 <a
                   href="#conteudo"
@@ -620,7 +643,7 @@ export default function App({ initialPath }: AppProps = {}) {
                 </a>
               </div>
 
-              <div className="mt-10 grid max-w-xl grid-cols-2 border-y border-accent-blue/12 text-sm sm:grid-cols-4">
+              <div className="mt-10 hidden max-w-xl grid-cols-2 border-y border-accent-blue/12 text-sm sm:grid sm:grid-cols-4">
                 {[
                   ['keyword', page.keyword],
                   ['escopo', 'sob medida'],
@@ -639,7 +662,7 @@ export default function App({ initialPath }: AppProps = {}) {
           </div>
         </section>
 
-        <section className="relative py-20 lg:py-28" id="conteudo">
+        <section className="relative py-14 sm:py-20 lg:py-28" id="conteudo">
           <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-6 lg:grid-cols-[0.72fr_1.28fr]">
             <div>
               <p className="section-kicker">Contexto</p>
@@ -656,7 +679,7 @@ export default function App({ initialPath }: AppProps = {}) {
           </div>
         </section>
 
-        <section className="relative border-y border-accent-blue/10 bg-[#07101D]/70 py-20 lg:py-28">
+        <section className="relative border-y border-accent-blue/10 bg-[#07101D]/70 py-14 sm:py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-5 sm:px-6">
             <div className="mb-12 max-w-3xl">
               <p className="section-kicker">Aplicação prática</p>
@@ -678,7 +701,7 @@ export default function App({ initialPath }: AppProps = {}) {
           </div>
         </section>
 
-        <section className="relative py-20 lg:py-28">
+        <section className="relative py-14 sm:py-20 lg:py-28">
           <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-6 lg:grid-cols-[0.8fr_1.2fr]">
             <div className="technical-panel">
               <p className="section-kicker text-accent-orange">O que considerar</p>
@@ -698,7 +721,7 @@ export default function App({ initialPath }: AppProps = {}) {
           </div>
         </section>
 
-        <section className="relative border-y border-accent-blue/10 bg-[#07101D]/56 py-20 lg:py-28">
+        <section className="relative border-y border-accent-blue/10 bg-[#07101D]/56 py-14 sm:py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-5 sm:px-6">
             <div className="mb-12 max-w-3xl">
               <p className="section-kicker">Processo</p>
@@ -717,7 +740,7 @@ export default function App({ initialPath }: AppProps = {}) {
           </div>
         </section>
 
-        <section className="relative py-20 lg:py-28">
+        <section className="relative py-14 sm:py-20 lg:py-28">
           <div className="mx-auto max-w-7xl px-5 sm:px-6">
             <div className="mb-12 max-w-3xl">
               <p className="section-kicker">FAQ</p>
@@ -734,7 +757,7 @@ export default function App({ initialPath }: AppProps = {}) {
           </div>
         </section>
 
-        <section className="relative border-t border-accent-blue/10 bg-[#07101D]/56 py-20 lg:py-28">
+        <section className="relative border-t border-accent-blue/10 bg-[#07101D]/56 py-14 sm:py-20 lg:py-28">
           <div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-6 lg:grid-cols-[1fr_0.62fr] lg:items-center">
             <div>
               <p className="section-kicker text-accent-orange">Contato</p>
